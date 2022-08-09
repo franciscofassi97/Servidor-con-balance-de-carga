@@ -1,4 +1,6 @@
 const args = require('../yargs')
+const os = require('os');
+const numeroCpu = os.cpus().length;
 
 const recuperarInfo = (_, res) => {
   const info = {
@@ -8,12 +10,12 @@ const recuperarInfo = (_, res) => {
     memory: process.memoryUsage.rss(),
     path: process.cwd(),
     processId: process.pid,
-    file: __dirname
+    file: __dirname,
+    numeroCpu: numeroCpu,
   }
 
 
   info.keys = Object.keys(info.args)
-  console.log({ info: info })
   res.render("info", { info: info })
 }
 module.exports = { recuperarInfo }

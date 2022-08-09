@@ -1,8 +1,19 @@
 require("dotenv").config();
 const express = require('express');
+const cluster = require('cluster');
+const os = require('os');
+
 
 const argumentos = require('./yargs');
+const MODO = argumentos.modo;
 const PORT = argumentos.port;
+const numeroCpu = os.cpus().length;
+const processID = process.pid;
+
+
+
+
+
 
 const connectDB = require('./database');
 connectDB();
@@ -79,8 +90,29 @@ app.get("/", (req, res) => {
 });
 
 
-httpServer.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
-});
+/*
+	Inicio servidor segun modo
+*/
+if (MODO === "FORK") {
+
+	httpServer.listen(PORT, () => {
+		console.log(`Server is running on port ${PORT}`);
+	});
+
+} else {
+	console.log(`Procesos: ${processID}, - isMaster: ${cluster.isMaster}, - numeroCpu: ${numeroCpu}`);
+	if (cluster.isPrimary) {
+		for (let i = 0; i < numeroCpu; i++) {
+			cluster.fork()
+		}
+		cluster.on('exit', (worker) => {
+			console.log(`Proceso ${worker.process.pid} terminado`);
+		})
+	} else {
+		httpServer.listen(PORT, () => { console.log(`Server is running on port ${PORT}`); });
+	}
+}
+
+
 
 
