@@ -2,7 +2,7 @@ const yargs = require('yargs');
 
 const argumentos = process.argv.slice(2);
 const parsear = yargs(argumentos).default({
-  port: 8080,
+  port: 8081,
   modo: "FORK",
 }).alias({
   p: 'port',

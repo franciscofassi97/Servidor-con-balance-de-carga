@@ -83,11 +83,18 @@ app.set("views", "./views");
 /*
 Uso de reutas dinamicas -----> https://github.com/leifermendez/node-seed-api/blob/main/app/routes/index.js
 */
+app.get("/datos", (req, res) => {
+	res.send(`puero corriendo es ${PORT}`)
+});
+
+
 app.use('/api', require('./routers'))
 
 app.get("/", (req, res) => {
 	res.redirect("/api/productos");
 });
+
+
 
 
 /*
